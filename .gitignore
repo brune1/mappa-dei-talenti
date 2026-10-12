@@ -1,0 +1,25 @@
+   # File che Windows e gli editor creano da soli e che non servono nel progetto
+
+   # Windows
+   Thumbs.db
+   Desktop.ini
+   $RECYCLE.BIN/
+
+   # macOS (utile se qualcuno apre il progetto da Mac)
+   .DS_Store
+
+   # Cartelle degli editor di codice
+   .vscode/
+   .idea/
+
+   # File temporanei di Office e simili
+   ~$*
+   *.tmp
+   *.log
+
+   # Segreti: non vanno mai pubblicati
+   .env
+   *.key
+
+   # Pacchetti scaricati (non servono per una pagina singola)
+   node_modules/
