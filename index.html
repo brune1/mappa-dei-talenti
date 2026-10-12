@@ -1,0 +1,769 @@
+<!doctype html><html lang="it"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Mappa dei Talenti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: wizard a colonna singola (max 760px), colore riservato ai 4 domini, UI in inchiostro neutro */
+:root{
+  --bg:#F3F5F1; --surface:#FFFFFF; --surface-2:#E8ECE6; --fg:#18211E; --muted:#58645F; --line:#D5DAD3;
+  --ink:#18211E; --on-ink:#F3F5F1;
+  --d0:#6A47A8; --d1:#BF5F14; --d2:#1C71A3; --d3:#34804A;
+  --display:"Bricolage Grotesque",system-ui,sans-serif; --body:"Hanken Grotesk",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121815; --surface:#1A221E; --surface-2:#242E29; --fg:#E8EDE9; --muted:#9FAAA4; --line:#2E3832;
+    --ink:#E8EDE9; --on-ink:#121815;
+    --d0:#A58AE0; --d1:#F0A05C; --d2:#6DB4E0; --d3:#7FCB92; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1A221E; --surface-2:#242E29; --fg:#E8EDE9; --muted:#9FAAA4; --line:#2E3832;
+  --ink:#E8EDE9; --on-ink:#121815;
+  --d0:#A58AE0; --d1:#F0A05C; --d2:#6DB4E0; --d3:#7FCB92; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--body);padding-inline:16px;padding-block:8px 64px}
+.wrap{max-width:760px;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.15;text-wrap:balance;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--fg);outline-offset:3px;border-radius:6px}
+[data-d="0"]{--dc:var(--d0)} [data-d="1"]{--dc:var(--d1)} [data-d="2"]{--dc:var(--d2)} [data-d="3"]{--dc:var(--d3)}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:var(--on-ink);font-weight:600}
+.btn.ghost{background:transparent;color:var(--fg)}
+.btn.sm{min-height:38px;padding:0 16px;font-size:.9rem}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+/* intro */
+.intro h1{font-size:clamp(2.5rem,9vw,4rem);letter-spacing:-.02em}
+.lead{font-size:1.2rem;line-height:1.5;max-width:34em;margin:14px 0 22px}
+.note{border:1.5px solid var(--fg);border-radius:14px;padding:14px 16px;font-size:.95rem;background:var(--surface)}
+.h-sm{font-size:1.15rem;margin:32px 0 10px}
+.how{margin:0;padding-left:1.3em}
+.how li{margin:.4em 0;max-width:44em}
+.demo{margin-top:16px;border:1.5px dashed var(--line);border-radius:14px;padding:12px 12px 6px}
+.demo p{margin:0 0 4px;font-size:.88rem;color:var(--muted)}
+.doms{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.dom{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.dom b{display:flex;align-items:center;gap:8px;font-family:var(--display)}
+.dom b::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--dc);flex:none}
+.dom span{display:block;font-size:.88rem;color:var(--muted);margin-top:2px}
+/* test */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px 10px}
+.tb-row{display:flex;justify-content:space-between;gap:12px;font-size:.88rem;color:var(--muted);margin-bottom:8px}
+.brand{font-family:var(--display);font-weight:700;color:var(--fg)}
+.prog{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--ink);transition:width .25s}
+.pair{display:grid;gap:0}
+.st{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;gap:14px;align-items:flex-start;transition:opacity .15s,border-color .15s,background .15s}
+.st .num{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 .85rem var(--display);background:var(--surface-2)}
+.st p{margin:0;font-size:1.1rem;line-height:1.45}
+.st.pick{border-color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.st.pick .num{background:var(--ink);color:var(--on-ink)}
+.st.dim{opacity:.6}
+.or{text-align:center;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-block:8px}
+.scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-top:22px;align-items:start}
+.sc{background:none;border:0;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.sc .dw{height:52px;display:grid;place-items:center}
+.sc .dot{display:block;border-radius:50%;border:2px solid var(--muted);background:var(--surface);transition:border-color .12s,background .12s}
+.s1 .dot,.s5 .dot{width:52px;height:52px}.s2 .dot,.s4 .dot{width:40px;height:40px}.s3 .dot{width:30px;height:30px}
+.sc .lb{font-size:.74rem;line-height:1.2;text-align:center;color:var(--muted)}
+.sc:hover:not(:disabled) .dot{border-color:var(--fg)}
+.sc[aria-checked="true"] .dot{background:var(--ink);border-color:var(--ink);box-shadow:inset 0 0 0 4px var(--surface)}
+.sc[aria-checked="true"] .lb{color:var(--fg);font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-top:24px}
+.hint{font-size:.82rem;color:var(--muted);margin:14px 0 0;display:none}
+@media (hover:hover){.hint{display:block}}
+.dots{display:flex;flex-wrap:wrap;gap:2px;margin-top:22px}
+.dots button{width:22px;height:22px;background:none;border:0;padding:0;display:grid;place-items:center}
+.dots button::before{content:"";width:10px;height:10px;border-radius:50%;border:1.5px solid var(--muted)}
+.dots .a::before{background:var(--fg);border-color:var(--fg)}
+.dots .c::before{outline:2px solid var(--fg);outline-offset:2px}
+/* risultati */
+.rh{margin-top:20px}
+.rh h1{font-size:clamp(2rem,7vw,2.8rem)}
+.rh p{color:var(--muted);margin:8px 0 0;font-size:.92rem}
+.rtools{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:22px;overflow-x:auto}
+.tab{padding:12px 14px;border:0;background:none;border-bottom:3px solid transparent;font-weight:600;color:var(--muted);white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--fg);border-color:var(--fg)}
+.h-md{font-size:1.3rem;margin:30px 0 10px}
+.chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 8px;border-radius:999px;background:color-mix(in srgb,var(--dc) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--dc) 40%,var(--line));font-weight:600}
+.chip b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--dc);color:var(--surface);font:700 .8rem var(--display)}
+.dcw{display:grid;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.dc-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+.dn{display:flex;align-items:center;gap:8px;font-weight:600}
+.dn .sw{width:12px;height:12px;border-radius:50%;background:var(--dc)}
+.dv{font-variant-numeric:tabular-nums;font-weight:700}
+.track{grid-column:1/-1;position:relative;height:14px;border-radius:7px;background:var(--surface-2)}
+.track i{display:block;height:100%;border-radius:7px;background:var(--dc)}
+.track b{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--fg);opacity:.55}
+.dsub{grid-column:1/-1;font-size:.8rem;color:var(--muted)}
+.cap{font-size:.84rem;color:var(--muted);margin:10px 0 0}
+.fl{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.fl button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:.88rem;font-weight:600}
+.fl button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sep{font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);padding:14px 4px 2px;font-weight:600}
+.row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;grid-template-areas:"rk nm sc" ". dm bar";gap:2px 10px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.row .rk{grid-area:rk;font:700 1rem var(--display);color:var(--muted);font-variant-numeric:tabular-nums}
+.row .nm{grid-area:nm;font-weight:600}
+.row .dm{grid-area:dm;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.row .dm::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--dc)}
+.row .bar{grid-area:bar;height:8px;border-radius:4px;background:var(--surface-2);min-width:90px}
+.row .bar i{display:block;height:100%;border-radius:4px;background:var(--dc)}
+.row .sc2{grid-area:sc;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.row .sc2 sup{font-weight:600;color:var(--muted);margin-left:2px}
+.row.g1{background:color-mix(in srgb,var(--dc) 12%,var(--surface));border-color:color-mix(in srgb,var(--dc) 40%,var(--line));padding-block:14px}
+.row.g1 .nm{font-size:1.1rem;font-family:var(--display)}
+.row.g1 .rk{color:var(--dc)}
+.row.g3{opacity:.82}
+@media (min-width:600px){
+  .row{grid-template-columns:30px minmax(0,1fr) 150px 130px 44px;grid-template-areas:"rk nm dm bar sc"}
+}
+/* analisi */
+.abar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:20px 0 6px}
+.badge{font-size:.78rem;font-weight:600;padding:4px 12px;border-radius:999px;background:var(--surface-2)}
+.words{font-size:.8rem;color:var(--muted)}
+.ctx{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px}
+.ctx summary{cursor:pointer;font-weight:600}
+.ctx p{font-size:.85rem;color:var(--muted);margin:6px 0 8px}
+textarea{width:100%;min-height:130px;resize:vertical;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:12px;font:inherit;font-size:.95rem}
+.status{min-height:1.4em;font-size:.88rem;color:var(--muted);margin:8px 0 0}
+.prose{max-width:66ch;margin-top:8px}
+.prose h2{font-size:1.55rem;margin:2.2rem 0 .6rem}
+.prose h3{font-size:1.1rem;margin:1.5rem 0 .3rem}
+.prose p{margin:.6em 0;line-height:1.65}
+.prose ul{padding-left:1.2em;margin:.5em 0}
+.prose li{margin:.45em 0;line-height:1.6}
+.fine{font-size:.82rem;color:var(--muted);margin-top:36px;border-top:1px solid var(--line);padding-top:16px;max-width:66ch}
+.priv{margin-top:14px}.priv .how{margin:8px 0 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div id="app"></div>
+<script>
+const D=[
+ {n:"Esecuzione",s:"Esecuzione",sub:"Come trasformi le intenzioni in risultati",verb:"ti dà concretezza e continuità"},
+ {n:"Influenza",s:"Influenza",sub:"Come ti fai sentire e muovi gli altri",verb:"ti fa muovere e coinvolgere gli altri"},
+ {n:"Costruzione di relazioni",s:"Relazioni",sub:"Come tieni unite le persone",verb:"ti fa leggere e tenere unite le persone"},
+ {n:"Pensiero strategico",s:"Pensiero",sub:"Come analizzi, immagini e scegli la direzione",verb:"ti dà direzione e profondità"}
+];
+const T=[
+{k:"ACH",en:"Achiever",n:"Realizzatore",d:0,s:["A fine giornata mi sento soddisfatto solo se ho portato a termine qualcosa di concreto.","Ho bisogno di sentire che sto avanzando: senza traguardi da spuntare mi spengo."],
+ desc:"Hai una spinta interna a concludere: il valore della giornata lo misuri da ciò che hai portato a termine.",
+ work:"In un team sei quello che tiene il ritmo, porta la lista a zero e fa avanzare i progetti anche quando l'entusiasmo cala.",
+ risk:"Puoi confondere l'essere occupato con l'essere efficace, lavorare troppo e faticare a riposarti quando non c'è un traguardo.",
+ give:"energia e costanza per arrivare in fondo",
+ act:"Scegli ogni settimana un solo risultato che conta davvero e proteggi del tempo per raggiungerlo, invece di accumulare piccole attività.",
+ lev:"Proponi di guidare un progetto con inizio, fine e un risultato misurabile, così da avere una prova concreta da mostrare."},
+{k:"ARR",en:"Arranger",n:"Organizzatore",d:0,s:["Quando ho molte cose in corso, mi viene naturale riorganizzare persone e risorse per farle funzionare meglio.","Davanti a un imprevisto, rimescolo i pezzi del piano finché trovo una configurazione che funziona."],
+ desc:"Sai vedere come combinare persone, tempi e risorse nel modo più efficiente, e ti piace farlo quando le variabili sono molte.",
+ work:"Sei a tuo agio in situazioni complesse e in movimento: riconfiguri il piano quando cambia qualcosa senza perdere il filo.",
+ risk:"Puoi continuare a rimescolare anche quando il sistema funziona già, e sembrare poco prevedibile a chi preferisce stabilità.",
+ give:"la capacità di far funzionare insieme molte parti",
+ act:"Mappa in una pagina tutti i progetti che segui, con responsabili e scadenze: ti serve per vedere dove una riorganizzazione porta davvero valore.",
+ lev:"Offriti di coordinare un'iniziativa trasversale con più persone coinvolte, anche piccola, per fare pratica di regia."},
+{k:"BEL",en:"Belief",n:"Convinzione",d:0,s:["Scelgo il lavoro in base ai valori in cui credo, anche se pagherebbe di più altrove.","Ci sono principi su cui non scendo a compromessi, e guidano le mie decisioni più importanti."],
+ desc:"Hai valori profondi e stabili che orientano ciò che scegli, dove lavori e per cosa ti spendi.",
+ work:"Dai senso al lavoro: sei affidabile perché le tue azioni seguono ciò in cui credi, e ti motivano missioni in cui ti riconosci.",
+ risk:"Quando un contesto va contro i tuoi valori puoi irrigidirti o chiuderti, e rischi di giudicare chi ragiona con priorità diverse.",
+ give:"senso e direzione morale",
+ act:"Scrivi i tre valori che non negozi e confronta il tuo lavoro attuale con essi: ti serve come filtro per le prossime scelte.",
+ lev:"Cerca organizzazioni o progetti la cui missione dichiarata coincide con i tuoi valori e parla con due persone che ci lavorano."},
+{k:"CON",en:"Consistency",n:"Coerenza",d:0,s:["Mi dà fastidio quando le regole valgono per alcuni e non per altri.","Credo che le persone debbano essere trattate con gli stessi criteri, senza eccezioni di favore."],
+ desc:"Per te le regole devono valere per tutti allo stesso modo: ti importa che le persone abbiano pari opportunità e criteri trasparenti.",
+ work:"Sei un riferimento di equità: porti trasparenza nei criteri di valutazione e metti a disagio i favoritismi.",
+ risk:"Puoi apparire rigido davanti a casi particolari che meriterebbero un'eccezione e faticare con ambienti informali.",
+ give:"equità e criteri chiari",
+ act:"Individua un processo del tuo lavoro in cui i criteri sono poco chiari e proponi una regola semplice e condivisa.",
+ lev:"Partecipa alla definizione di criteri di valutazione, onboarding o priorità in un team e documentali."},
+{k:"DEL",en:"Deliberative",n:"Cautela",d:0,s:["Prima di decidere valuto con calma i rischi, anche quando gli altri hanno fretta.","Preferisco procedere con prudenza e tenere le informazioni riservate finché non sono sicuro."],
+ desc:"Pesi i rischi prima di agire: sei attento, riservato e ti piace decidere con consapevolezza.",
+ work:"Sei il collega che vede gli ostacoli prima degli altri e protegge il gruppo da errori costosi.",
+ risk:"Puoi rallentare le decisioni, sembrare freddo o negativo e perdere occasioni che richiedono rapidità.",
+ give:"prudenza e una lettura del rischio",
+ act:"Per le decisioni importanti fissa una scadenza oltre la quale decidi con ciò che hai, anche se non sei al 100% sicuro.",
+ lev:"Assumi il ruolo di chi valuta i rischi di un progetto e presenta alternative con probabilità e impatto."},
+{k:"DIS",en:"Discipline",n:"Disciplina",d:0,s:["Mi sento a mio agio con routine precise, orari e un ordine che posso prevedere.","Pianifico la mia giornata nei dettagli e mi innervosisco quando il programma salta."],
+ desc:"Ti trovi a tuo agio con ordine, routine e prevedibilità: dai struttura al caos.",
+ work:"Porti metodo: scadenze rispettate, processi ordinati, dettagli curati.",
+ risk:"Puoi irrigidirti quando i piani saltano e giudicare chi lavora in modo più fluido: la struttura può diventare una gabbia.",
+ give:"metodo e struttura",
+ act:"Costruisci una routine settimanale con tempi dedicati a studio, networking e candidature: ti dà ritmo senza dover decidere ogni volta.",
+ lev:"Trasforma una tua routine efficace in un processo o template condivisibile con il team."},
+{k:"FOC",en:"Focus",n:"Focalizzazione",d:0,s:["Se mi do un obiettivo, taglio tutto ciò che mi distrae e vado dritto a quello.","Mi serve sapere dove sto andando: con una meta chiara, le priorità si decidono da sole."],
+ desc:"Ti serve una direzione chiara: con un obiettivo definito elimini ciò che è accessorio e vai dritto.",
+ work:"Sei chi riporta la discussione al punto, fissa le priorità e dice no a ciò che non serve all'obiettivo.",
+ risk:"Puoi trascurare opportunità laterali, risultare sbrigativo e fare fatica quando gli obiettivi non sono chiari.",
+ give:"priorità e direzione",
+ act:"Scrivi un obiettivo di carriera a 12 mesi in una frase e valuta ogni attività della settimana in base a quanto lo avvicina.",
+ lev:"Definisci obiettivi trimestrali con indicatori e rivedili ogni mese con una persona di cui ti fidi."},
+{k:"RES",en:"Responsibility",n:"Responsabilità",d:0,s:["Quando prendo un impegno, lo considero un debito d'onore e faccio di tutto per rispettarlo.","Se qualcosa va storto in un progetto che porto avanti, sento che tocca a me rimediare."],
+ desc:"Senti come tuoi gli impegni presi: se dici che farai una cosa, la fai, e se sbagli ne rispondi.",
+ work:"Sei affidabile al massimo: gli altri sanno che possono contare su di te.",
+ risk:"Puoi caricarti troppo, faticare a delegare e a dire di no, e vivere gli errori altrui come tuoi.",
+ give:"affidabilità e senso del dovere",
+ act:"Prima di accettare un nuovo impegno chiediti cosa ti toglie, e prova a dire un no motivato questa settimana.",
+ lev:"Chiedi la responsabilità di un risultato intero (non solo di compiti) e impara a delegare parti precise."},
+{k:"REP",en:"Restorative",n:"Riparatore",d:0,s:["Mi accendo quando c'è un problema da risolvere e capire cosa si è rotto.","Sono bravo a individuare cosa non funziona in un processo e a rimetterlo in piedi."],
+ desc:"Ti piace risolvere problemi: individuare cosa non va e rimetterlo in funzione ti dà energia.",
+ work:"Sei il collega a cui si porta ciò che è rotto: processi, relazioni, situazioni critiche.",
+ risk:"Puoi vedere solo ciò che manca, criticare più che valorizzare e cercare problemi anche dove non ce ne sono.",
+ give:"diagnosi e risoluzione dei problemi",
+ act:"Scegli un processo che non funziona e documenta cause, proposta e risultato atteso, anche in un solo foglio.",
+ lev:"Proponi di guidare un intervento di miglioramento (un processo, un report, un flusso) misurando prima e dopo."},
+{k:"ACT",en:"Activator",n:"Attivatore",d:1,s:["Dopo un po' di discussione mi viene voglia di partire: si impara facendo.","Preferisco iniziare subito e correggere strada facendo, piuttosto che aspettare il piano perfetto."],
+ desc:"Trasformi le idee in azione: preferisci partire e imparare dall'esperienza piuttosto che aspettare le condizioni perfette.",
+ work:"Sei la scintilla che sblocca le riunioni infinite e mette il gruppo in movimento.",
+ risk:"Puoi risultare impaziente, partire senza sufficiente preparazione e bruciare chi ha bisogno di più tempo.",
+ give:"avvio e velocità di esecuzione",
+ act:"Scegli un'idea che rimandi da tempo e fai un piccolo test entro sette giorni.",
+ lev:"Lancia un esperimento a basso costo (un pilota, un prototipo, una prova) con un metro di giudizio fissato prima."},
+{k:"COM",en:"Command",n:"Comando",d:1,s:["Se nessuno prende posizione, mi viene naturale farmi avanti e dire cosa si fa.","Non ho problemi a dire apertamente il mio disaccordo, anche quando crea tensione."],
+ desc:"Prendi posizione con naturalezza: dici cosa pensi, guidi quando serve e affronti i conflitti senza paura.",
+ work:"Nei momenti di crisi o di stallo sei tu a prendere in mano la situazione e a chiarire le decisioni.",
+ risk:"Puoi risultare dominante o intimidatorio, non lasciare spazio agli altri e creare scontri evitabili.",
+ give:"decisione e capacità di guidare",
+ act:"Nelle riunioni prova a fare una domanda in più prima di prendere posizione, e osserva cosa cambia.",
+ lev:"Chiedi di guidare un'iniziativa con un team e, a fine progetto, raccogli feedback onesto su come hai guidato."},
+{k:"CMM",en:"Communication",n:"Comunicazione",d:1,s:["So rendere vive le idee: spiegazioni, esempi e storie mi vengono con facilità.","Mi piace trovare le parole giuste per far capire un concetto difficile a chi ascolta."],
+ desc:"Sai tradurre idee e dati in parole chiare e coinvolgenti: racconti, spieghi, fai capire.",
+ work:"Sei efficace nelle presentazioni, nelle spiegazioni a non esperti e nel dare vita a un messaggio.",
+ risk:"Puoi parlare più di quanto ascolti e far prevalere l'efficacia del racconto sulla solidità dei contenuti.",
+ give:"la capacità di spiegare e coinvolgere",
+ act:"Trasforma un tuo lavoro in una presentazione di cinque minuti e provala davanti a una persona che non conosce l'argomento.",
+ lev:"Presenta i risultati di un progetto a un pubblico reale (un team, un evento, un pubblico online) e chiedi feedback."},
+{k:"CMP",en:"Competition",n:"Competizione",d:1,s:["Il confronto con gli altri mi dà energia: voglio misurarmi e arrivare tra i primi.","Una classifica o un risultato da battere mi motivano più di qualsiasi altro incentivo."],
+ desc:"Ti misuri sempre con gli altri e con i numeri: vincere ti dà energia, arrivare secondo ti disturba.",
+ work:"Nei contesti con obiettivi, classifiche e target dai il meglio e trascini il gruppo verso risultati ambiziosi.",
+ risk:"Puoi vedere rivali ovunque, scoraggiarti quando non puoi vincere e far vivere il confronto come una pressione.",
+ give:"spinta verso l'eccellenza e i risultati misurabili",
+ act:"Scegli un metro di confronto con te stesso (un tuo record) e tienilo accanto al confronto con gli altri.",
+ lev:"Cerca ruoli con obiettivi quantitativi chiari e fatti assegnare un target personale e uno di squadra."},
+{k:"MAX",en:"Maximizer",n:"Massimizzatore",d:1,s:["Preferisco trasformare ciò che funziona già bene in eccellenza, piuttosto che sistemare ciò che è mediocre.","Mi interessa far rendere al massimo i punti forti, miei e degli altri."],
+ desc:"Cerchi l'eccellenza partendo dai punti forti: ti interessa trasformare il buono in ottimo.",
+ work:"Sei il collega che alza lo standard di ciò che funziona già e sa valorizzare i talenti degli altri.",
+ risk:"Puoi perdere interesse per ciò che è solo sufficiente e diventare impaziente verso chi non punta al massimo.",
+ give:"standard alto e attenzione ai punti forti",
+ act:"Elenca le tre attività in cui sei già forte e decidi come dedicarvi più tempo ogni settimana.",
+ lev:"Scegli un ambito in cui sei già bravo e portalo a un livello riconoscibile con un lavoro pubblico (un portfolio, un progetto, una certificazione)."},
+{k:"SEL",en:"Self-Assurance",n:"Fiducia in sé",d:1,s:["Mi fido del mio giudizio e dopo aver deciso raramente mi tormento con i dubbi.","Anche quando gli altri dubitano, resto convinto di poter gestire la situazione."],
+ desc:"Hai fiducia nel tuo giudizio e nella tua capacità di gestire ciò che arriva: decidi senza farti paralizzare dai dubbi.",
+ work:"Trasmetti sicurezza agli altri e ti prendi rischi calcolati senza bisogno di approvazione continua.",
+ risk:"Puoi ignorare i dubbi degli altri, sottovalutare i feedback critici e sembrare arrogante.",
+ give:"sicurezza e capacità di decidere sotto pressione",
+ act:"Chiedi a due persone un parere sincero su una tua decisione recente e ascolta senza difenderti.",
+ lev:"Prendi una decisione importante di cui ti assumi in pubblico la responsabilità e rivedila dopo 90 giorni."},
+{k:"SIG",en:"Significance",n:"Significatività",d:1,s:["Voglio che il mio lavoro sia notato e riconosciuto come importante.","Mi spinge l'idea di lasciare un segno visibile, di essere una persona di cui si parla."],
+ desc:"Vuoi che il tuo lavoro conti e sia riconosciuto: cerchi impatto visibile e rispetto da persone che stimi.",
+ work:"Punti in alto, ti fai avanti per i progetti di rilievo e ti impegni per risultati che hanno peso.",
+ risk:"Puoi dipendere dal riconoscimento altrui, sentirti poco valorizzato in ruoli dietro le quinte e competere per la visibilità.",
+ give:"ambizione e orientamento all'impatto",
+ act:"Definisci che cosa significa per te lasciare un segno e scrivi tre risultati concreti che vorresti poter mostrare tra due anni.",
+ lev:"Rendi visibile il tuo lavoro: un articolo, un progetto pubblico o un intervento che mostri a chi decide cosa sai fare."},
+{k:"WOO",en:"Woo",n:"Conquista",d:1,s:["Mi piace conoscere persone nuove e rompere il ghiaccio con sconosciuti.","Un evento pieno di gente che non conosco mi stimola: è un'occasione per fare nuove conoscenze."],
+ desc:"Stringi facilmente nuovi contatti: rompere il ghiaccio e creare legami con sconosciuti ti dà energia.",
+ work:"Sei una risorsa di rete: apri porte, presenti le persone e ti senti a tuo agio in eventi e contesti nuovi.",
+ risk:"Puoi fermarti alla superficie, trascurare la cura dei legami nel tempo e disperdere energia.",
+ give:"la rete e la facilità di avviare relazioni",
+ act:"Contatta due persone nuove al mese nei ruoli che ti interessano e proponi un caffè di venti minuti.",
+ lev:"Trasforma i contatti in relazioni: segui ogni persona con un aggiornamento utile e un grazie dopo ogni incontro."},
+{k:"ADA",en:"Adaptability",n:"Adattabilità",d:2,s:["Quando i piani cambiano all'ultimo momento, mi adatto senza fatica e anzi mi diverto.","Vivo bene il giorno per giorno e mi muovo con leggerezza tra le novità."],
+ desc:"Vivi bene nel presente e ti adatti ai cambiamenti con leggerezza: i piani che saltano non ti spaventano.",
+ work:"Sei prezioso quando la situazione è incerta o in rapido cambiamento, e sai reagire a ciò che arriva.",
+ risk:"Puoi pianificare poco, essere percepito come poco impegnato nel lungo periodo e farti trascinare dalle urgenze altrui.",
+ give:"flessibilità e capacità di reagire",
+ act:"Scegli una priorità di lungo periodo e proteggi ogni settimana un'ora per lavorarci, indipendentemente dalle urgenze.",
+ lev:"Cerca ruoli in contesti dinamici (startup, nuove aree) e tieni un registro delle cose imparate."},
+{k:"CNN",en:"Connectedness",n:"Connessione",d:2,s:["Sono convinto che le cose accadano per un motivo e che tutto sia collegato.","Sento di far parte di qualcosa di più grande di me, e questo orienta le mie scelte."],
+ desc:"Vedi i legami tra le persone e le cose e senti che ciò che fai fa parte di un quadro più ampio.",
+ work:"Sai creare ponti tra persone e gruppi diversi e dare un senso condiviso al lavoro.",
+ risk:"Puoi apparire vago o troppo idealista e faticare con chi vuole prove concrete.",
+ give:"una prospettiva ampia e il senso di appartenenza",
+ act:"Descrivi in una frase come il tuo lavoro contribuisce a qualcosa di più grande e testala con un collega.",
+ lev:"Fai da ponte tra due team o due ambiti che non si parlano e documenta cosa è cambiato."},
+{k:"DEV",en:"Developer",n:"Sviluppatore",d:2,s:["Provo vera soddisfazione quando vedo qualcuno crescere grazie a un mio aiuto.","Noto i piccoli progressi delle persone e mi piace farglieli notare per incoraggiarle."],
+ desc:"Vedi il potenziale in chi hai accanto e ti riempie di gioia vedere qualcuno crescere.",
+ work:"Sei un mentore naturale: noti i progressi, dai feedback incoraggianti e crei occasioni per imparare.",
+ risk:"Puoi investire in chi non è pronto a cambiare e misurare il tuo valore sui risultati degli altri.",
+ give:"la capacità di far crescere le persone",
+ act:"Scegli una persona che segui e dalle un feedback specifico sul suo ultimo progresso.",
+ lev:"Offriti come mentore o tutor strutturato (in un'associazione, in un team, a studenti) con obiettivi chiari."},
+{k:"EMP",en:"Empathy",n:"Empatia",d:2,s:["Capisco come si sente una persona dal tono e dai gesti, anche se non lo dice.","Assorbo facilmente lo stato d'animo di chi ho intorno."],
+ desc:"Percepisci ciò che gli altri sentono, spesso prima che lo dicano.",
+ work:"Sai leggere l'atmosfera, anticipare le reazioni e far sentire le persone comprese.",
+ risk:"Puoi assorbire le emozioni altrui, faticare a dire verità scomode e farti carico di ciò che non è tuo.",
+ give:"la lettura delle persone e delle emozioni",
+ act:"Dopo una riunione scrivi cosa hanno provato le persone chiave e verifica a voce se avevi ragione.",
+ lev:"Usa la tua sensibilità in un ruolo di ascolto strutturato: interviste, customer research, feedback dei clienti."},
+{k:"HAR",en:"Harmony",n:"Armonia",d:2,s:["Cerco i punti d'accordo e preferisco evitare le discussioni che dividono.","In un gruppo mi viene naturale smussare gli attriti e trovare un terreno comune."],
+ desc:"Cerchi il terreno comune e preferisci il consenso allo scontro: il conflitto ti pesa.",
+ work:"Sei una figura stabilizzante: riduci le tensioni, trovi compromessi e tieni il gruppo coeso.",
+ risk:"Puoi evitare conflitti necessari, cedere troppo e nascondere disaccordi che servirebbero al gruppo.",
+ give:"coesione e senso pratico nel trovare accordi",
+ act:"Questa settimana esprimi apertamente un disaccordo costruttivo che altrimenti avresti taciuto.",
+ lev:"Fai da facilitatore in una decisione difficile, assicurandoti che le posizioni divergenti siano espresse prima della sintesi."},
+{k:"INC",en:"Includer",n:"Inclusione",d:2,s:["Se vedo qualcuno rimasto ai margini del gruppo, mi viene spontaneo coinvolgerlo.","Credo che un gruppo funzioni meglio quando tutti si sentono accolti."],
+ desc:"Noti chi rimane fuori e allarghi il cerchio: vuoi che ognuno si senta parte del gruppo.",
+ work:"Crei squadre in cui le persone si sentono accolte e dai voce a chi parla poco.",
+ risk:"Puoi includere senza scegliere, trascurare la selettività necessaria e sentirti ferito dalle esclusioni.",
+ give:"accoglienza e coinvolgimento",
+ act:"In ogni riunione fai parlare per prima la persona più silenziosa e osserva cosa porta.",
+ lev:"Progetta un'iniziativa di accoglienza (onboarding, community, evento) e misura partecipazione e soddisfazione."},
+{k:"IND",en:"Individualization",n:"Individualizzazione",d:2,s:["Mi colpiscono le differenze tra le persone e adatto il mio modo di trattarle a ciascuna.","Non credo nelle soluzioni uguali per tutti: ognuno ha il proprio modo di dare il meglio."],
+ desc:"Ti colpisce l'unicità di ogni persona: non ragioni per categorie ma per differenze.",
+ work:"Sai capire cosa motiva ognuno e adattare compiti, comunicazione e stile alle singole persone.",
+ risk:"Puoi faticare con regole generali e processi standard e sembrare poco coerente tra una persona e l'altra.",
+ give:"personalizzazione e attenzione alle differenze",
+ act:"Per tre persone che frequenti scrivi cosa le motiva e come preferiscono ricevere feedback.",
+ lev:"Cerca un ruolo in cui personalizzare un'esperienza (clienti, utenti, studenti) e raccogli casi concreti."},
+{k:"POS",en:"Positivity",n:"Positività",d:2,s:["Porto energia e buonumore nei gruppi, e questo cambia l'atmosfera.","Tendo a vedere il lato buono delle situazioni e a trasmettere entusiasmo."],
+ desc:"Porti entusiasmo e leggerezza: il tuo buonumore è contagioso e rende il lavoro più piacevole.",
+ work:"Rialzi il morale nei momenti difficili, celebri i successi e rendi più facile cominciare.",
+ risk:"Puoi minimizzare i problemi seri, sembrare poco profondo e sentirti sotto pressione a dover essere sempre allegro.",
+ give:"energia e morale del gruppo",
+ act:"Accompagna il tuo ottimismo con un dato o un rischio concreto, così che sia preso sul serio.",
+ lev:"Organizza momenti di celebrazione dei risultati in un team e usali per rendere visibili i progressi."},
+{k:"REL",en:"Relator",n:"Relazione",d:2,s:["Preferisco costruire poche relazioni profonde che tante conoscenze superficiali.","Mi sento più me stesso con persone che conosco bene e di cui mi fido."],
+ desc:"Preferisci legami profondi e autentici a molti contatti superficiali: investi in poche persone di cui ti fidi.",
+ work:"Crei fiducia solida e collaborazioni durature, e porti il meglio di te con chi conosci bene.",
+ risk:"Puoi chiuderti in cerchie ristrette, fidarti con difficoltà dei nuovi e soffrire quando i legami cambiano.",
+ give:"fiducia e legami duraturi",
+ act:"Scegli tre persone nel tuo ambito professionale e fissa un incontro per parlare di dove vuoi arrivare.",
+ lev:"Individua un mentore o un alleato di lungo periodo e costruisci con lui una collaborazione su un progetto reale."},
+{k:"ANA",en:"Analytical",n:"Analitico",d:3,s:["Quando qualcuno fa un'affermazione, mi viene da chiedere: dove sono i dati che la provano?","Mi piace cercare nei numeri le cause e i collegamenti che altri non vedono."],
+ desc:"Chiedi prove: scomponi i problemi, cerchi cause e schemi nei dati e distingui ciò che è dimostrato da ciò che è solo opinione.",
+ work:"Sei il collega che porta rigore: verifichi le ipotesi, smonti le affermazioni deboli e dai solidità alle decisioni.",
+ risk:"Puoi bloccarti nell'analisi, essere percepito come critico o scettico e sottovalutare ciò che non si misura.",
+ give:"rigore e fondamento dei dati",
+ act:"Scegli una domanda del tuo ambito e rispondi con un'analisi di dati reali: anche un notebook o un foglio di calcolo bastano.",
+ lev:"Pubblica un caso di analisi (con metodo, dati e conclusioni) che mostri come ragioni."},
+{k:"CTX",en:"Context",n:"Contesto",d:3,s:["Per capire il presente devo capire com'è nato: guardo sempre a cosa è successo prima.","Studiare la storia di un'azienda o di una situazione mi aiuta a decidere meglio."],
+ desc:"Per capire il presente guardi al passato: la storia di una situazione ti aiuta a decidere meglio.",
+ work:"Sai riconoscere gli schemi che si ripetono e dare profondità storica alle scelte del team.",
+ risk:"Puoi fissarti su come sono andate le cose e sottovalutare ciò che è realmente nuovo.",
+ give:"la memoria e la lettura delle origini",
+ act:"Prima di un nuovo progetto ricostruisci cosa è stato tentato prima e perché è andato bene o male.",
+ lev:"Scrivi un'analisi retrospettiva di un caso (un progetto, un mercato, un'azienda) con le lezioni utili al presente."},
+{k:"FUT",en:"Futuristic",n:"Futuristico",d:3,s:["Mi capita spesso di immaginare come potrebbe essere il futuro e di appassionarmene.","Una visione di ciò che sarà possibile mi dà più energia del lavoro quotidiano."],
+ desc:"Vivi proiettato in avanti: immagini ciò che sarà possibile e trascini gli altri con quell'immagine.",
+ work:"Dai orizzonte e ispirazione, ricordi al gruppo perché vale la pena fare fatica oggi.",
+ risk:"Puoi vivere troppo nel domani, trascurare i dettagli pratici e frustrarti con chi è concentrato sull'oggi.",
+ give:"visione e ispirazione sul domani",
+ act:"Descrivi in una pagina come sarà il tuo lavoro ideale tra cinque anni e individua due passi per avvicinarti.",
+ lev:"Collega la tua visione a un progetto concreto con tappe trimestrali, così che resti con i piedi a terra."},
+{k:"IDE",en:"Ideation",n:"Ideazione",d:3,s:["Mi vengono molte idee nuove e mi diverto a collegare cose che sembrano lontane.","Una riunione senza idee originali mi annoia: cerco sempre un modo diverso di vedere le cose."],
+ desc:"Sei attratto dalle idee: colleghi cose lontane e trovi spiegazioni nuove e originali.",
+ work:"Sei la fonte di approcci nuovi, soprattutto quando il gruppo è bloccato nei soliti schemi.",
+ risk:"Puoi disperderti, innamorarti di troppe idee e non portarne avanti nessuna fino in fondo.",
+ give:"originalità e nuove connessioni",
+ act:"Tieni un quaderno delle idee e ogni venerdì scegli quella da trasformare in una piccola azione.",
+ lev:"Affiancati a un partner di esecuzione per portare un'idea fino alla prova sul campo."},
+{k:"INP",en:"Input",n:"Raccolta",d:3,s:["Colleziono informazioni, articoli e spunti perché prima o poi potrebbero servire.","Sono curioso di tutto e archivio dati e conoscenze anche senza uno scopo immediato."],
+ desc:"Collezioni informazioni, spunti e conoscenze perché hai una curiosità vasta e ti piace accumulare materiale.",
+ work:"Sei la memoria viva del gruppo: sai sempre dove trovare una risorsa o un esempio utile.",
+ risk:"Puoi accumulare senza usare, perderti nei dettagli e rinviare la decisione perché c'è ancora qualcosa da leggere.",
+ give:"risorse, esempi e curiosità",
+ act:"Organizza ciò che raccogli in un archivio ordinato (note, tag) e ogni mese ricava tre spunti da usare.",
+ lev:"Trasforma la tua raccolta in un prodotto utile agli altri (una newsletter, una guida, un archivio condiviso)."},
+{k:"INT",en:"Intellection",n:"Riflessione",d:3,s:["Ho bisogno di tempo da solo per pensare a fondo, e lo trovo piacevole.","Mi piace stare con i miei pensieri e rimuginare a lungo su una questione."],
+ desc:"Ami pensare: ti serve tempo di riflessione per approfondire e per dare senso alle cose.",
+ work:"Sai portare profondità: elabori, riformuli e arrivi a conclusioni ponderate.",
+ risk:"Puoi isolarti, restare nel pensiero e faticare a condividere ciò che pensi prima che sia perfetto.",
+ give:"profondità di pensiero",
+ act:"Blocca due ore a settimana per pensare senza interruzioni e scrivi cosa ne ricavi.",
+ lev:"Condividi regolarmente un tuo ragionamento (una nota, un post, un memo) per allenarti a esporre il pensiero."},
+{k:"LRN",en:"Learner",n:"Apprendimento",d:3,s:["Mi entusiasma il processo di imparare qualcosa di nuovo, più del risultato.","Sono felice quando passo da principiante a competente su un argomento."],
+ desc:"Ti entusiasma imparare: il processo di passare da principiante a competente ti dà energia.",
+ work:"Impari in fretta, ti adatti a nuovi ambiti e porti una continua spinta di crescita.",
+ risk:"Puoi inseguire il prossimo corso senza applicare, perdere interesse quando padroneggi qualcosa ed essere percepito come instabile.",
+ give:"velocità di apprendimento e curiosità",
+ act:"Scegli una sola competenza da sviluppare nei prossimi 90 giorni e definisci un prodotto finale che la dimostri.",
+ lev:"Trasforma ciò che impari in qualcosa che insegni o pubblichi: un tutorial, un caso, un workshop."},
+{k:"STR",en:"Strategic",n:"Strategia",d:3,s:["Davanti a un obiettivo vedo subito più strade possibili e scelgo la migliore.","Riconosco rapidamente schemi e alternative, anche in situazioni complesse."],
+ desc:"Vedi rapidamente le alternative possibili e scegli il percorso migliore: pensi in termini di mosse e conseguenze.",
+ work:"Sei utile quando c'è confusione: trovi un cammino e lo rendi chiaro agli altri.",
+ risk:"Puoi spazientirti con chi non vede ciò che vedi, cambiare rotta spesso e trascurare di spiegare il percorso.",
+ give:"chiarezza di percorso e scelta tra alternative",
+ act:"Per un tuo obiettivo scrivi tre percorsi alternativi con pro, contro e primo passo di ciascuno, e scegli.",
+ lev:"Chiedi di contribuire a un piano strategico (di prodotto, di mercato, di crescita) e presenta le alternative che hai valutato."}
+];
+const KI={};T.forEach((t,i)=>KI[t.k]=i);
+// [tema A, variante A, tema B, variante B]: ogni tema compare due volte (variante 0 e 1)
+const ORDER=[
+["ACH",0,"POS",0],["FOC",1,"ADA",1],["CMM",0,"INT",0],["BEL",1,"FUT",1],["DEL",0,"ACT",0],["SIG",1,"REL",1],
+["ARR",0,"LRN",0],["COM",1,"HAR",1],["SEL",0,"CNN",0],["DIS",1,"IDE",1],["REP",0,"HAR",0],["WOO",1,"ANA",1],
+["RES",0,"SIG",0],["MAX",1,"INP",1],["IND",0,"STR",0],["REP",1,"CTX",1],["BEL",0,"WOO",0],["ARR",1,"EMP",1],
+["CMP",0,"INC",0],["CNN",1,"INT",1],["FOC",0,"INP",0],["CON",1,"ACT",1],["REL",0,"ANA",0],["RES",1,"POS",1],
+["MAX",0,"DEV",0],["CMP",1,"LRN",1],["CON",0,"IDE",0],["DEV",1,"STR",1],["COM",0,"EMP",0],["ACH",1,"CMM",1],
+["DIS",0,"ADA",0],["DEL",1,"SEL",1],["CTX",0,"FUT",0],["IND",1,"INC",1]
+];
+// ordine di visualizzazione: alterno quale affermazione appare per prima
+const Q=ORDER.map((o,i)=>{const a=KI[o[0]],b=KI[o[2]],sa=T[a].s[o[1]],sb=T[b].s[o[3]];
+  return i%2?{t1:b,s1:sb,t2:a,s2:sa}:{t1:a,s1:sa,t2:b,s2:sb};});
+const LAB=["Molto la prima","Più la prima","Uguali","Più la seconda","Molto la seconda"];
+const DEFAULT_CTX="";
+// Profilo FITTIZIO: risposte generate automaticamente da pesi inventati. Nessun dato reale.
+const SAMPLE_ANSWERS=[3,4,4,3,4,3,5,2,4,1,3,1,2,3,5,3,2,1,5,2,2,3,5,2,4,1,5,2,5,5,3,3,3,2];
+const W10=[10,8,6,5,4,2,2,2,2,2];
+const BRIDGE={"0-1":"di non limitarti a fare bene le cose, ma di farle vedere e di coinvolgere gli altri","0-2":"di consegnare risultati senza perdere le persone per strada","0-3":"di dare metodo alle idee e alle analisi, portandole fino al risultato","1-2":"di influenzare con credibilità, perché le persone ti seguono per fiducia e non solo per forza","1-3":"di unire visione e capacità di persuasione: sai ciò che vale la pena fare e sai convincere altri a farlo","2-3":"di capire sia i dati sia le persone, e quindi di proporre soluzioni che le persone adottano davvero"};
+const DOMLINE=["Il baricentro del tuo profilo è l'Esecuzione: trasformi le intenzioni in risultati, e gli altri contano su di te per portare le cose a termine.","Il baricentro del tuo profilo è l'Influenza: sai prendere la parola, muovere le persone e far succedere le cose.","Il baricentro del tuo profilo è la Costruzione di relazioni: tieni insieme le persone e crei la fiducia che rende possibile il lavoro di squadra.","Il baricentro del tuo profilo è il Pensiero strategico: capisci, analizzi e immagini, e porti al gruppo profondità e direzione."];
+const GAP=["L'Esecuzione è il dominio meno presente: rischi di avere buone intenzioni che faticano a diventare risultati. Costruisci un sistema esterno (agenda, scadenze condivise, una persona a cui rendere conto) che faccia da struttura al posto tuo.","L'Influenza è il dominio meno presente: puoi avere idee solide e farti sentire poco. Allenati a prendere posizione presto, a presentare ciò che fai e a chiedere ciò che ti serve.","La Costruzione di relazioni è il dominio meno presente: rischi di sottovalutare l'effetto delle tue scelte sulle persone e di costruire poco capitale relazionale. Investi con regolarità in pochi rapporti di fiducia.","Il Pensiero strategico è il dominio meno presente: rischi di agire senza abbastanza analisi o visione di lungo periodo. Prima delle decisioni importanti chiedi a qualcuno con questi talenti di rivedere le tue scelte."];
+const TENS=[
+["DEL","ACT","Cautela ti fa pesare i rischi, Attivatore ti spinge a partire: senza regole oscilli tra frenata e scatto. Decidi in anticipo quanta analisi serve per ogni tipo di scelta e, scaduto il tempo, parti."],
+["HAR","COM","Armonia cerca il consenso, Comando vuole prendere posizione: puoi sentirti diviso tra chiarezza e accordo. Prova a considerare la franchezza una forma di rispetto."],
+["HAR","CMP","Armonia teme lo scontro, Competizione lo cerca: puoi voler vincere e sentirti in colpa se qualcuno perde. Sposta la gara sul risultato, non sulle persone."],
+["FOC","IDE","Focalizzazione taglia, Ideazione moltiplica: le idee nuove ti sembrano distrazioni. Dedica uno spazio protetto all'esplorazione, separato da quello dell'esecuzione."],
+["FOC","ADA","Focalizzazione ti vuole su una rotta, Adattabilità ti porta dove soffia il vento. Stabilisci cosa è fisso (l'obiettivo) e cosa è flessibile (il percorso)."],
+["FOC","INP","Focalizzazione chiede di tagliare, Raccolta di accumulare. Fissa una data in cui smetti di raccogliere e inizi a produrre."],
+["DIS","ADA","Disciplina ama l'ordine, Adattabilità l'improvvisazione: l'imprevisto può sembrarti insieme una minaccia e un gioco. Pianifica la struttura e lascia una fascia libera ogni giorno."],
+["ANA","ACT","Analitico vuole le prove, Attivatore vuole partire. Usa test piccoli e rapidi per ottenere prove mentre agisci."],
+["INT","WOO","Riflessione chiede solitudine, Conquista chiede contatto. Alterna di proposito momenti di rete e momenti di pensiero per non esaurirti."],
+["REL","WOO","Relazione cerca profondità, Conquista ampiezza. Scegli quali contatti trasformare in rapporti veri e coltiva quelli."],
+["MAX","INC","Massimizzatore investe sui più forti, Inclusione non vuole lasciare indietro nessuno. Chiarisci quando serve selezionare e quando accogliere."],
+["CON","IND","Coerenza vuole regole uguali per tutti, Individualizzazione tratta ognuno in modo diverso. Spiega sempre il criterio dietro le differenze di trattamento."],
+["SEL","EMP","Fiducia in sé decide, Empatia percepisce ciò che gli altri sentono. Usa l'empatia come dato prima di decidere, non come freno."],
+["RES","ADA","Responsabilità vuole rispettare ogni impegno, Adattabilità vive il presente: il rischio è dire sì a troppo e consegnare a fatica. Impara a dire no."],
+["FUT","CTX","Futuristico guarda avanti, Contesto indietro. Usali in due momenti diversi della decisione: prima la memoria, poi la visione."],
+["CMP","INC","Competizione cerca la vittoria, Inclusione la partecipazione. Le sfide di squadra fanno coincidere le due spinte."],
+["IDE","DIS","Ideazione genera, Disciplina ordina. Costruisci un metodo che dia un posto alle idee senza perdere il ritmo."],
+["STR","DEL","Strategia vede subito le alternative, Cautela vuole più tempo per sceglierle. Concorda in anticipo il momento in cui si sceglie."]
+];
+const FAM=[
+{n:"Analisi, strategia e crescita",t:["ANA","STR","CTX","FUT","INT","LRN","IDE","INP","MAX","FOC"],roles:["Growth Analyst","Business Analyst","Strategy & Operations Analyst","Market o Product Analyst"],sect:"startup e scaleup in crescita, consulenza, e-commerce, fintech, sport-tech e wellness",why:"trasforma dati, informazioni e visione in decisioni di business"},
+{n:"Operations e gestione di progetto",t:["ACH","ARR","DIS","FOC","RES","CON","DEL","ADA"],roles:["Project o Program Manager","Business Operations","Operations Manager","Chief of Staff (come ruolo d'ingresso)"],sect:"retail, logistica, scaleup in fase di strutturazione, eventi, servizi",why:"premia chi porta metodo, affidabilità e capacità di far funzionare le cose"},
+{n:"Vendite, partnership e sviluppo business",t:["WOO","ACT","CMP","COM","SEL","CMM","SIG","REL"],roles:["Business Developer","Account Manager","Partnership Manager","Sales Specialist"],sect:"tecnologia B2B, consumer e retail, sport e fitness, servizi professionali",why:"premia chi apre porte, convince e regge la pressione dei risultati"},
+{n:"Persone, formazione e coaching",t:["DEV","EMP","IND","INC","REL","POS","HAR","CNN"],roles:["Learning & Development","HR Business Partner","Coach o formatore","Customer Success o Community Manager"],sect:"formazione, HR tech, wellness, education, terzo settore",why:"mette al centro la crescita e il benessere delle persone"},
+{n:"Prodotto, innovazione e contenuti",t:["IDE","FUT","CMM","INP","LRN","ADA","ACT","POS","SIG"],roles:["Product Manager o Product Owner","Innovation Specialist","Content o Marketing Strategist","Brand Manager"],sect:"media e creator economy, consumer tech, moda e lifestyle, sport e fitness",why:"richiede idee nuove, curiosità e capacità di raccontarle"},
+{n:"Leadership e gestione di team",t:["COM","SEL","MAX","RES","SIG","ACT","FOC","BEL","STR"],roles:["Team Lead","Responsabile di area","Fondatore o co-fondatore"],sect:"startup, PMI in crescita, associazioni e imprese sociali",why:"chiede di decidere, di prendersi responsabilità e di trascinare gli altri"},
+{n:"Qualità, rischio e controllo",t:["DEL","CON","DIS","REP","ANA","RES","CTX"],roles:["Risk o Quality Analyst","Controller","Compliance Specialist","Process Improvement"],sect:"banche e assicurazioni, manifattura, sanità, pubblica amministrazione",why:"premia rigore, coerenza e attenzione al rischio"},
+{n:"Impatto e missione",t:["BEL","CNN","DEV","INC","HAR","RES","SIG","FUT"],roles:["Program Manager nel non profit","Sustainability o ESG Specialist","Partnership e fundraising"],sect:"terzo settore, sostenibilità, istituzioni, sport sociale",why:"dà un senso più ampio al lavoro, in linea con ciò in cui credi"}
+];
+const wc=s=>(s.trim().match(/\S+/g)||[]).length;
+const fmt=x=>x.toFixed(1).replace(".",",");
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const list=a=>a.length<2?a.join(""):a.slice(0,-1).join(", ")+" e "+a[a.length-1];
+function analyze(answers){
+  const pts=T.map(()=>0),strong=T.map(()=>0),good=T.map(()=>0);
+  Q.forEach((q,i)=>{const v=answers[i];if(v==null)return;const a=5-v,b=4-a;
+    pts[q.t1]+=a;pts[q.t2]+=b;if(a===4)strong[q.t1]++;if(b===4)strong[q.t2]++;if(a===3)good[q.t1]++;if(b===3)good[q.t2]++;});
+  const idx=T.map((_,i)=>i).sort((a,b)=>pts[b]-pts[a]||strong[b]-strong[a]||good[b]-good[a]||a-b);
+  const rank=idx.map((t,i)=>({t,rank:i+1,pts:pts[t],strong:strong[t],tie:i>0&&pts[idx[i-1]]===pts[t]}));
+  const dom=D.map((_,d)=>{const ts=T.map((x,i)=>i).filter(i=>T[i].d===d);
+    return {d,n:ts.length,avg:ts.reduce((s,i)=>s+pts[i],0)/ts.length,top10:rank.slice(0,10).filter(r=>T[r.t].d===d).length};});
+  const res={rank,dom,pts};res.local=buildLocal(res);return res;
+}
+function scoreNote(r){
+  if(r.strong>=2)return "Lo hai scelto con decisione in entrambe le coppie in cui compariva: è un segnale forte.";
+  if(r.strong===1)return "In una delle due coppie lo hai scelto senza esitazioni, nell'altra in modo più sfumato: il segnale c'è, ma verificalo nella pratica.";
+  if(r.pts>=6)return "Lo hai scelto con costanza, anche se senza scelte estreme: è un talento affidabile, più calmo che dirompente.";
+  return "Emerge con meno nettezza di altri: leggilo come una tendenza da verificare, non come una certezza.";
+}
+function syn(a,b){
+  const ta=T[a],tb=T[b];
+  if(ta.d===tb.d)return `**${ta.n} + ${tb.n}.** Appartengono allo stesso dominio (${D[ta.d].n}), quindi si rinforzano: ${ta.give} si somma a ${tb.give}. L'effetto è potente, ma anche i punti ciechi si sommano e nessuno dei due ti avverte quando stai esagerando.`;
+  const lo=Math.min(ta.d,tb.d),hi=Math.max(ta.d,tb.d);
+  return `**${ta.n} + ${tb.n}.** ${cap(ta.give)} incontra ${tb.give}: il primo ${D[ta.d].verb}, il secondo ${D[tb.d].verb}. Insieme ti permettono ${BRIDGE[lo+"-"+hi]}.`;
+}
+function famScores(res){
+  return FAM.map(f=>{let s=0;const m=[];
+    res.rank.slice(0,10).forEach((r,i)=>{if(f.t.includes(T[r.t].k)){s+=W10[i];m.push(T[r.t].n);}});
+    return {f,s,m};}).sort((a,b)=>b.s-a.s);
+}
+function buildLocal(res){
+  const R=res.rank,top=R.slice(0,5),th=i=>T[top[i].t],o=[];
+  o.push("## I tuoi 5 temi dominanti");
+  o.push("Questi sono i cinque talenti che emergono con più forza dalle tue risposte. Il punteggio (da 0 a 8) dice quanto spesso e con quanta nettezza li hai scelti: più è alto, più quel modo di agire ti descrive in modo costante. Il test è indicativo e ogni tema compare solo due volte, quindi leggi la classifica come una mappa di tendenze, non come una misura precisa.");
+  top.forEach((r,i)=>{const t=T[r.t];o.push(`### ${i+1}. ${t.n} (${r.pts}/8)`);o.push(`${t.desc} ${t.work} ${scoreNote(r)}`);});
+  if(R[4].pts===R[5].pts)o.push(`**Nota sul quinto posto.** ${T[R[4].t].n} e ${T[R[5].t].n} hanno lo stesso punteggio (${R[4].pts}/8) e l'ordine tra i due dipende solo dalla nettezza delle scelte. Considerali entrambi talenti dominanti e verifica nella pratica quale ti rappresenta di più.`);
+  o.push("## Punti di forza e come si combinano");
+  const cnt=[0,0,0,0];top.forEach(r=>cnt[T[r.t].d]++);
+  const order=[0,1,2,3].sort((a,b)=>cnt[b]-cnt[a]||res.dom[b].avg-res.dom[a].avg);
+  o.push(`${DOMLINE[order[0]]} Nei tuoi primi cinque temi, ${list([0,1,2,3].filter(d=>cnt[d]).map(d=>`${cnt[d]} ${cnt[d]===1?"appartiene":"appartengono"} a ${D[d].n}`))}.`);
+  o.push(syn(top[0].t,top[1].t));
+  o.push(syn(top[0].t,top[2].t));
+  o.push(syn(top[1].t,top[2].t));
+  o.push(`In sintesi, la tua firma professionale è fatta di ${th(0).give}, ${th(1).give} e ${th(2).give}. Sei al meglio quando il contesto ti lascia usare questi tre talenti insieme, e meno quando ti costringe a lavorare contro di essi.`);
+  const sup=R.slice(5,10).map(r=>T[r.t].n);
+  o.push(`Subito dopo i primi cinque emergono ${list(sup)}. Non sono in cima alla classifica, ma lavorano da supporto: per esempio ${T[R[5].t].n} ti aggiunge ${T[R[5].t].give}, e ${T[R[6].t].n} ${T[R[6].t].give}.`);
+  o.push("## Rischi e punti ciechi");
+  o.push("Ogni talento diventa un limite quando lo usi senza regolarlo. Ecco dove guardare, tema per tema.");
+  top.forEach(r=>o.push(`- **${T[r.t].n}.** ${T[r.t].risk}`));
+  const set=new Set(R.slice(0,8).map(r=>r.t)),pos={};R.forEach((r,i)=>pos[r.t]=i);
+  const hits=TENS.map(x=>({a:KI[x[0]],b:KI[x[1]],txt:x[2]})).filter(x=>set.has(x.a)&&set.has(x.b))
+    .sort((x,y)=>(W10[pos[y.a]]+W10[pos[y.b]])-(W10[pos[x.a]]+W10[pos[x.b]])).slice(0,2);
+  if(hits.length){o.push("Tra i tuoi talenti ci sono anche delle tensioni, e vale la pena riconoscerle.");hits.forEach(h=>o.push(`**${T[h.a].n} e ${T[h.b].n}.** ${h.txt}`));}
+  else o.push("I tuoi talenti principali tirano nella stessa direzione: è una forza, ma significa anche che nessuno di loro ti ferma quando esageri. Cerca persone con talenti diversi e chiedi loro di rivedere le decisioni importanti.");
+  const weak=[...res.dom].sort((a,b)=>a.avg-b.avg)[0];
+  o.push(`**Il dominio meno presente.** ${GAP[weak.d]}`);
+  o.push("## Ruoli e settori più adatti");
+  const fam=famScores(res).slice(0,3);
+  o.push("Ho incrociato i tuoi dieci temi più alti, pesando di più i primi, con le famiglie di ruoli che li valorizzano. Sono tre direzioni da esplorare, non tre verdetti.");
+  fam.forEach(x=>{o.push(`### ${x.f.n}`);o.push(`Questo tipo di lavoro ${x.f.why}. Qui contano molto ${list(x.m)}, che nel tuo profilo sono tra i più alti. Ruoli da esplorare: ${x.f.roles.join(", ")}. Settori dove cercarli: ${x.f.sect}.`);});
+  o.push("Verifica ogni direzione parlando con chi fa quel lavoro: i talenti indicano dove puoi eccellere, non quali porte ti sono chiuse.");
+  const f1=fam[0].f;
+  o.push("## Piano di sviluppo: 30, 90 e 180 giorni");
+  o.push("### Primi 30 giorni: capire e provare");
+  [0,1,2].forEach(i=>o.push(`- **${th(i).n}.** ${th(i).act}`));
+  o.push("- **Conferme esterne.** Chiedi a tre persone che ti conoscono in quali situazioni ti hanno visto dare il meglio, e confronta le risposte con questi risultati.");
+  o.push("### Entro 90 giorni: applicare");
+  [0,1,2].forEach(i=>o.push(`- **${th(i).n}.** ${th(i).lev}`));
+  if(hits[0])o.push(`- **Tensione da gestire.** ${hits[0].txt}`);
+  o.push(`- **Esplorazione.** Parla con almeno tre persone che fanno il lavoro di ${f1.roles[0]} o ${f1.roles[1]} e chiedi come usano talenti simili ai tuoi.`);
+  o.push("### Entro 180 giorni: posizionarti");
+  [3,4].forEach(i=>o.push(`- **${th(i).n}.** ${th(i).lev}`));
+  o.push(`- **Prova pubblica.** Costruisci un lavoro visibile (un portfolio, un caso di studio, un progetto) che mostri tre dei tuoi talenti dominanti in azione per un ruolo come ${f1.roles[0]}.`);
+  o.push(`- **Mossa di carriera.** Candidati o proponi un cambio di ruolo con una storia chiara: "il mio talento ${th(0).n} insieme a ${th(1).n} produce questo risultato".`);
+  o.push("- **Verifica.** Rifai il punto: cosa è cambiato, quali talenti hai usato di più, quali feedback hai ricevuto. Aggiorna il piano.");
+  o.push("Rivedi il piano una volta al mese: i talenti non cambiano in fretta, ma il modo in cui li usi sì, ed è lì che si vede la differenza.");
+  return o.join("\n\n");
+}
+function buildPrompt(res,ctx){
+  const rows=res.rank.map(r=>`${r.rank}. ${T[r.t].n} (${T[r.t].en}, ${D[T[r.t].d].n}): ${r.pts}/8${r.strong?` - scelte nette: ${r.strong}`:""}`).join("\n");
+  const doms=res.dom.map(x=>`${D[x.d].n}: media ${fmt(x.avg)} su 8 per tema; temi nei primi 10: ${x.top10}`).join("\n");
+  const ties=[];res.rank.slice(0,10).forEach((r,i,a)=>{if(i>0&&r.tie)ties.push(`${T[r.t].n} pari merito con ${T[a[i-1].t].n} (${r.pts}/8)`);});
+  return `Sei un coach di carriera certificato Gallup: concreto, empatico, orientato all'azione, capace di spiegare i concetti in modo chiaro e senza gergo inutile. Scrivi in italiano e dai del "tu" alla persona.
+
+CONTESTO DEL TEST
+La persona ha svolto un test indicativo, ispirato a CliftonStrengths ma NON equivalente al test ufficiale Gallup: 34 coppie di affermazioni originali a scelta forzata (scala a 5 livelli), 34 temi, ciascuno presente in 2 coppie. Il punteggio di un tema va da 0 a 8 (media neutra 4). Con solo due osservazioni per tema, i punteggi vicini non sono davvero distinguibili: dillo dove serve. Usa i risultati come spunto di riflessione, non come verdetto.
+
+RISULTATI (classifica completa; tra parentesi il nome originale per aiutarti a interpretare, ma nel testo usa i nomi italiani)
+${rows}
+
+PUNTEGGI PER DOMINIO
+${doms}
+
+PARI MERITO NELLA PARTE ALTA
+${ties.length?ties.join("; "):"nessuno nei primi 10"}
+
+CONTESTO DELLA PERSONA (facoltativo, scritto da lei)
+${(ctx||"").trim().slice(0,1500)||"(non fornito)"}
+
+COME LAVORARE
+1. Prima ragiona con attenzione, senza mostrare il ragionamento: quali temi emergono, come interagiscono, quali tensioni e sinergie creano, cosa raccontano i temi più bassi, dove i dati sono incerti.
+2. Poi scrivi solo il testo dell'analisi finale, senza premesse né commenti su come l'hai scritta.
+
+STRUTTURA OBBLIGATORIA (titoli di secondo livello esatti, in quest'ordine)
+## I tuoi 5 temi dominanti
+(un sottotitolo ### per ciascun tema, con una spiegazione di come si manifesta in questa persona e perché emerge)
+## Punti di forza e come si combinano
+## Rischi e punti ciechi
+## Ruoli e settori più adatti
+## Piano di sviluppo: 30, 90 e 180 giorni
+(tre sottotitoli ###: Primi 30 giorni, Entro 90 giorni, Entro 180 giorni, con elenchi puntati di azioni concrete e verificabili)
+
+REGOLE
+- Circa 1.500-2.000 parole. Prosa ben strutturata; elenchi solo nel piano d'azione e dove aiutano davvero.
+- Tono professionale ma caloroso. Sii specifico sui risultati di questa persona: cita i temi per nome, spiega il perché di ogni conclusione, collega i temi tra loro. Niente frasi che varrebbero per chiunque.
+- Nei rischi spiega dove ogni talento può diventare un limite e come regolarlo.
+- Ruoli e settori: motiva ogni suggerimento con i temi che lo giustificano. Se è fornito un contesto, usalo per rendere ruoli, settori e piano più mirati, senza inventare altro sulla persona.
+- Non riprodurre testi o definizioni ufficiali Gallup. Nessuna diagnosi psicologica, nessuna promessa di successo.
+- Formato: solo Markdown semplice (##, ###, **grassetto**, elenchi con "- "). Niente tabelle, niente emoji.`;
+}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function inl(s){return esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>");}
+function md(text){
+  let h="",p=[],ul=false;
+  const fp=()=>{if(p.length){h+="<p>"+inl(p.join(" "))+"</p>";p=[];}};
+  const cl=()=>{if(ul){h+="</ul>";ul=false;}};
+  for(const raw of text.replace(/\r/g,"").split("\n")){
+    const l=raw.trim();let m;
+    if(!l){fp();cl();continue;}
+    if((m=l.match(/^(#{1,3})\s+(.*)$/))){fp();cl();const n=Math.max(2,m[1].length);h+=`<h${n}>${inl(m[2])}</h${n}>`;}
+    else if((m=l.match(/^[-•]\s+(.*)$/))){fp();if(!ul){h+="<ul>";ul=true;}h+="<li>"+inl(m[1])+"</li>";}
+    else{cl();p.push(l);}
+  }
+  fp();cl();return h;
+}
+</script>
+<script>
+const $=s=>document.querySelector(s);
+const app=document.getElementById("app");
+const KEY="mappa-talenti-v1";
+const N=Q.length;
+let S={screen:"intro",q:0,answers:Array(N).fill(null),tab:"rank",filter:"all",mode:"local",claude:"",sig:"",status:"",busy:false,ctl:null,sample:null,sampleReady:false,sampleOff:false,ctx:DEFAULT_CTX,confirmReset:false,res:null,demo:false};
+let advT=null;
+function save(){if(S.demo)return;try{localStorage.setItem(KEY,JSON.stringify({a:S.answers,q:S.q}));}catch(e){}}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(j&&Array.isArray(j.a)&&j.a.length===N){S.answers=j.a.map(v=>(v>=1&&v<=5)?v:null);S.q=Math.min(Math.max(+j.q||0,0),N-1);return true;}}catch(e){}return false;}
+function clear(){try{localStorage.removeItem(KEY);}catch(e){}}
+const doneCount=()=>S.answers.filter(x=>x!=null).length;
+function scaleHTML(v,demo){
+  return `<div class="scale" role="radiogroup" aria-label="La tua risposta">`+[1,2,3,4,5].map(n=>
+   `<button type="button" class="sc s${n}" role="radio" aria-checked="${v===n}" data-act="pick" data-v="${n}"${demo?' disabled tabindex="-1"':""}><span class="dw"><span class="dot"></span></span><span class="lb">${LAB[n-1]}</span></button>`).join("")+`</div>`;
+}
+function rIntro(){
+  const n=doneCount();
+  app.innerHTML=`<div class="wrap intro">
+  <p class="eyebrow">Test indicativo · ${N} coppie · circa 10 minuti</p>
+  <h1>Mappa dei Talenti</h1>
+  <p class="lead">Scopri quali talenti emergono con più forza dalle tue scelte e come trasformarli in decisioni di carriera concrete.</p>
+  <div class="note" role="note"><strong>Esito indicativo.</strong> Questo non è il test ufficiale CliftonStrengths di Gallup, non lo sostituisce e non ha validità scientifica. Le affermazioni sono originali, costruite sul modello dei 34 temi e dei 4 domini: usa il risultato come spunto di riflessione, non come verdetto.</div>
+  <div class="note priv" role="note"><strong>Perché vedi un esempio.</strong> Per tutelare la mia privacy, questa versione pubblica non contiene il mio test effettivo: ho usato un esempio simulato. Ecco come l'ho preparato:<ol class="how"><li>Ho tenuto fuori dal progetto le mie risposte e i miei risultati reali: non compaiono in nessun file.</li><li>Ho inventato un profilo fittizio, con alcuni talenti molto marcati e altri quasi assenti.</li><li>Ho fatto compilare le 34 coppie in automatico, in base a quel profilo: ogni risposta dipende solo dal confronto tra i due talenti in gioco.</li><li>Punteggi, classifica e analisi si calcolano come per chiunque altro; cambia solo il fatto che le risposte sono simulate.</li></ol><p class="cap">Puoi anche compilare il test tu: le tue risposte restano salvate solo nel tuo browser.</p><div class="actions" style="margin-top:14px"><button class="btn sm" data-act="demo">Vedi i risultati dell'esempio</button></div></div>
+  <h2 class="h-sm">Come funziona</h2>
+  <ol class="how">
+   <li>Per ogni coppia di affermazioni indichi quale ti descrive meglio e quanto, su 5 livelli.</li>
+   <li>Rispondi d'istinto, pensando a come sei di solito al lavoro e nello studio, non a come vorresti essere.</li>
+   <li>Alla fine trovi la classifica dei 34 temi, il grafico dei 4 domini e un'analisi per la tua carriera. Puoi tornare indietro e cambiare le risposte in qualsiasi momento.</li>
+  </ol>
+  <div class="demo" aria-hidden="true"><p>Così risponderai:</p>${scaleHTML(3,true)}</div>
+  <h2 class="h-sm">I 4 domini</h2>
+  <div class="doms">${D.map((d,i)=>`<div class="dom" data-d="${i}"><b>${d.n}</b><span>${d.sub}</span></div>`).join("")}</div>
+  <div class="actions">
+   ${n>0&&n<N?`<button class="btn" data-act="resume">Riprendi (${n}/${N})</button><button class="btn ghost" data-act="restart">Ricomincia</button>`:
+     n===N?`<button class="btn" data-act="finish">Vedi i risultati</button><button class="btn ghost" data-act="restart">Rifai il test</button>`:
+     `<button class="btn" data-act="start">Inizia il test</button>`}
+  </div></div>`;
+}
+function rTest(){
+  const i=S.q,q=Q[i],v=S.answers[i],done=doneCount();
+  const c1=v==null?"":v<=2?"pick":v===3?"":"dim",c2=v==null?"":v>=4?"pick":v===3?"":"dim";
+  const last=i===N-1,miss=N-done;
+  const firstMiss=S.answers.findIndex(x=>x==null);
+  let right;
+  if(done===N)right=`<button class="btn" data-act="finish">Vedi i risultati</button>`;
+  else if(last)right=`<button class="btn ghost" data-act="jump" data-i="${firstMiss}">Mancano ${miss} risposte: vai alla prima</button>`;
+  else right=`<button class="btn" data-act="next"${v==null?" disabled":""}>Avanti →</button>`;
+  app.innerHTML=`<div class="wrap">
+  <header class="topbar"><div class="tb-row"><span class="brand">Mappa dei Talenti</span><span aria-live="polite">Domanda ${i+1} di ${N}</span></div>
+   <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${done}" aria-label="Risposte date"><i style="width:${done/N*100}%"></i></div></header>
+  <main>
+   <p class="eyebrow">Quale ti descrive meglio?</p>
+   <div class="pair">
+    <div class="st ${c1}"><span class="num">1</span><p>${esc(q.s1)}</p></div>
+    <div class="or" aria-hidden="true">oppure</div>
+    <div class="st ${c2}"><span class="num">2</span><p>${esc(q.s2)}</p></div>
+   </div>
+   ${scaleHTML(v,false)}
+   <div class="nav"><button class="btn ghost" data-act="back"${i===0?" disabled":""}>← Indietro</button>${right}</div>
+   <p class="hint">Scorciatoie: tasti 1-5 per rispondere, frecce sinistra e destra per spostarti.</p>
+   <div class="dots" aria-label="Elenco domande">${S.answers.map((a,k)=>`<button type="button" class="${a!=null?"a":""} ${k===i?"c":""}" data-act="jump" data-i="${k}" aria-label="Vai alla domanda ${k+1}${a!=null?" (risposta data)":""}"></button>`).join("")}</div>
+  </main></div>`;
+}
+function rowsHTML(){
+  const res=S.res,f=S.filter;let h="",lastG=0;
+  res.rank.forEach(r=>{
+    const t=T[r.t];if(f!=="all"&&String(t.d)!==f)return;
+    const g=r.rank<=5?1:r.rank<=10?2:3;
+    if(f==="all"&&g!==lastG){h+=`<li class="sep">${g===1?"Talenti dominanti":g===2?"Talenti di supporto":"Meno marcati"}</li>`;lastG=g;}
+    h+=`<li class="row g${g}" data-d="${t.d}"><span class="rk">${r.rank}</span><span class="nm">${t.n}</span><span class="dm">${D[t.d].s}</span><span class="bar"><i style="width:${r.pts/8*100}%"></i></span><span class="sc2">${r.pts}${r.tie?'<sup title="Pari merito con il tema precedente">=</sup>':""}</span></li>`;
+  });
+  return h;
+}
+function rankPanel(){
+  const res=S.res,top=res.rank.slice(0,5);
+  const srt=[...res.dom].sort((a,b)=>b.avg-a.avg),hi=srt[0],lo=srt[3];
+  return `<div role="tabpanel">
+  <h2 class="h-md">I tuoi 5 temi dominanti</h2>
+  <ul class="chips">${top.map(r=>`<li class="chip" data-d="${T[r.t].d}"><b>${r.rank}</b>${T[r.t].n}</li>`).join("")}</ul>
+  <h2 class="h-md">I 4 domini</h2>
+  <div class="dcw">${res.dom.map(x=>`<div class="dc-row" data-d="${x.d}"><span class="dn"><i class="sw"></i>${D[x.d].n}</span><span class="dv">${fmt(x.avg)}</span><div class="track"><i style="width:${x.avg/8*100}%"></i><b></b></div><span class="dsub">${x.top10} ${x.top10===1?"tema":"temi"} nei primi 10</span></div>`).join("")}</div>
+  <p class="cap">Punteggio medio per tema, su una scala da 0 a 8. La linea segna il valore neutro (4): in un test a scelta forzata la media complessiva è sempre 4, quindi conta lo scarto. Il dominio più forte per te è ${D[hi.d].n} (${fmt(hi.avg)}), il meno presente ${D[lo.d].n} (${fmt(lo.avg)}).</p>
+  <h2 class="h-md">Classifica completa</h2>
+  <div class="fl" id="fl">${[["all","Tutti"],["0","Esecuzione"],["1","Influenza"],["2","Relazioni"],["3","Pensiero"]].map(([k,l])=>`<button type="button" data-act="filter" data-f="${k}" aria-pressed="${S.filter===k}">${l}</button>`).join("")}</div>
+  <ol class="rank" id="rank">${rowsHTML()}</ol>
+  <p class="cap">Il segno "=" indica un pari merito con il tema precedente: in quel caso l'ordine dipende dalla nettezza delle tue scelte. Ogni tema compare in sole due coppie, quindi punteggi vicini non sono davvero distinguibili.</p>
+  <div class="actions"><button class="btn" data-act="tab" data-tab="analysis">Leggi la tua analisi →</button></div></div>`;
+}
+const ERR={not_granted:"Non hai consentito alla pagina di usare Claude: resta disponibile l'analisi di base.",sampling_disabled:"Claude non è disponibile per questo account: resta l'analisi di base.",not_declared:"Claude non è disponibile in questa pagina.",capability_disabled:"Claude non è disponibile in questa visualizzazione.",capability_removed:"Claude non è disponibile in questa visualizzazione.",rate_limited:"Troppe richieste o limite di utilizzo raggiunto: riprova più tardi.",session_expired:"Sessione scaduta: accedi di nuovo a Claude e riprova.",refused:"Claude non ha potuto elaborare la richiesta. Modifica il contesto e riprova.",empty_completion:"Claude non ha restituito testo: riprova.",prompt_too_large:"Il contesto è troppo lungo: accorcialo.",upstream_error:"Connessione interrotta: riprova."};
+const PERM=["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"];
+function analysisPanel(){
+  const can=!!S.sample&&!S.sampleOff&&!S.demo;
+  const ask=can?`<details class="ctx"><summary>Contesto personale (facoltativo, modificabile)</summary><p>Viene inviato a Claude solo quando scrivi l'analisi, per rendere più mirati ruoli, settori e piano. Puoi modificarlo o svuotarlo.</p><textarea id="ctx" maxlength="1500">${esc(S.ctx)}</textarea></details>
+   <div class="actions" style="margin-top:14px"><button class="btn" id="ask" data-act="ask"></button><button class="btn ghost" id="stop" data-act="stop" hidden>Interrompi</button><button class="btn ghost" id="toggle" data-act="toggle" hidden></button></div>`
+   :(S.demo?`<p class="cap">Questa è l'analisi di base, calcolata dai punteggi dell'esempio (profilo fittizio). Nell'esempio la riscrittura con Claude è disattivata.</p>`:S.sampleReady?`<p class="cap">Questa è l'analisi di base, calcolata dai tuoi punteggi. In una visualizzazione con Claude disponibile potrai farla riscrivere su misura.</p>`:"");
+  return `<div role="tabpanel"><div class="abar"><span class="badge" id="badge"></span><span class="words" id="words"></span></div>${ask}
+  <p class="status" id="status" aria-live="polite"></p><article class="prose" id="prose"></article>
+  <p class="fine">Analisi indicativa, basata su affermazioni originali ispirate al modello CliftonStrengths. Non è il test ufficiale Gallup, non ha validità scientifica e non sostituisce una valutazione professionale: usala come spunto per riflettere e verificare nella pratica.</p></div>`;
+}
+function paintAnalysis(){
+  const prose=$("#prose");if(!prose)return;
+  const cl=S.mode==="claude"&&S.claude,text=cl?S.claude:S.res.local;
+  prose.innerHTML=md(text);
+  $("#badge").textContent=cl?"Scritta da Claude sui tuoi risultati":(S.demo?"Analisi di base, calcolata dai punteggi dell'esempio":"Analisi di base, calcolata dai tuoi punteggi");
+  $("#words").textContent="≈ "+wc(text)+" parole";
+  $("#status").textContent=S.status;
+  const ask=$("#ask");if(ask){ask.textContent=S.claude?"Riscrivi con Claude":"Scrivi l'analisi con Claude";ask.disabled=S.busy;
+    $("#stop").hidden=!S.busy;const tg=$("#toggle");tg.hidden=!(S.claude&&!S.busy);tg.textContent=S.mode==="claude"?"Mostra l'analisi di base":"Mostra quella di Claude";}
+}
+function rResults(){
+  const t=S.tab;
+  app.innerHTML=`<div class="wrap"><div class="rh"><h1>${S.demo?"Risultati dell'esempio":"I tuoi risultati"}</h1><p>Esito indicativo: non equivale al test ufficiale Gallup e non ha validità scientifica.</p>${S.demo?`<div class="note priv" role="note"><strong>Esempio dimostrativo.</strong> Queste risposte sono simulate da un profilo fittizio: non sono i miei risultati reali. Ho usato un esempio per tutelare la mia privacy.</div>`:""}
+  <div class="rtools">${S.demo?`<button class="btn ghost sm" data-act="exitdemo">Esci dall'esempio</button>`:`<button class="btn ghost sm" data-act="edit">Modifica le risposte</button><button class="btn ghost sm" data-act="restart">${S.confirmReset?"Conferma: cancella tutto":"Ricomincia"}</button>`}</div></div>
+  <div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="${t==="rank"}" data-act="tab" data-tab="rank">Classifica e domini</button><button class="tab" role="tab" aria-selected="${t==="analysis"}" data-act="tab" data-tab="analysis">Analisi per la carriera</button></div>
+  ${t==="rank"?rankPanel():analysisPanel()}</div>`;
+  if(t==="analysis")paintAnalysis();
+}
+function render(){({intro:rIntro,test:rTest,results:rResults})[S.screen]();}
+function toTop(){window.scrollTo({top:0});}
+async function askClaude(){
+  if(!S.sample||S.busy)return;
+  const regen=!!S.claude;S.busy=true;S.status="Claude sta ragionando sui tuoi risultati: può richiedere uno o due minuti.";S.ctl=new AbortController();paintAnalysis();
+  let began=false;
+  try{
+    const opts={modelTier:"complex",signal:S.ctl.signal,
+      onText:({text})=>{if(!began){began=true;S.mode="claude";}S.claude=text;S.status="Claude sta scrivendo…";paintAnalysis();}};
+    if(regen)opts.cache=false;
+    const r=await S.sample(buildPrompt(S.res,S.ctx),opts);
+    S.claude=r.text;S.sig=S.answers.join("");S.status=r.truncated?"Il testo è stato interrotto per lunghezza. Puoi riscriverlo.":"Analisi completata.";
+  }catch(e){
+    const code=e&&e.code;
+    if(e&&e.text&&code!=="refused"){S.claude=e.text;S.mode="claude";S.status=code==="cancelled"?"Interrotta: resta il testo scritto finora.":(ERR[code]||"Interrotta.")+" Resta il testo scritto finora.";}
+    else{S.claude="";S.mode="local";S.status=code==="cancelled"?"Interrotta.":(ERR[code]||"Qualcosa non ha funzionato: riprova.");}
+    if(PERM.includes(code))S.sampleOff=true;
+  }
+  S.busy=false;S.ctl=null;
+  if(S.screen==="results"&&S.tab==="analysis"){if(S.sampleOff)rResults();else paintAnalysis();}
+}
+function go(act,el){
+  if(act!=="pick")clearTimeout(advT);
+  switch(act){
+    case "start":S.q=0;S.screen="test";render();toTop();break;
+    case "resume":{const m=S.answers.findIndex(x=>x==null);S.q=m<0?0:m;S.screen="test";render();toTop();break;}
+    case "restart":
+      if(S.screen==="results"&&!S.confirmReset){S.confirmReset=true;render();setTimeout(()=>{if(S.confirmReset){S.confirmReset=false;if(S.screen==="results")render();}},4000);break;}
+      S.confirmReset=false;S.answers=Array(N).fill(null);S.q=0;S.claude="";S.mode="local";S.status="";S.res=null;clear();S.screen="test";render();toTop();break;
+    case "pick":{
+      const v=+el.dataset.v,first=S.answers[S.q]==null;S.answers[S.q]=v;save();render();
+      clearTimeout(advT);
+      if(first&&S.q<N-1)advT=setTimeout(()=>{if(S.screen==="test"){S.q++;save();render();}},260);
+      break;}
+    case "back":if(S.q>0){S.q--;save();render();}break;
+    case "next":if(S.q<N-1&&S.answers[S.q]!=null){S.q++;save();render();}break;
+    case "jump":S.q=+el.dataset.i;save();render();break;
+    case "finish":{
+      if(doneCount()<N)break;
+      S.res=analyze(S.answers);
+      if(S.sig!==S.answers.join("")){S.claude="";S.mode="local";S.status="";}
+      S.screen="results";S.tab="rank";S.confirmReset=false;render();toTop();break;}
+    case "edit":S.screen="test";S.q=0;S.confirmReset=false;render();toTop();break;
+    case "tab":S.tab=el.dataset.tab;render();toTop();break;
+    case "filter":S.filter=el.dataset.f;{const l=$("#rank");if(l){l.innerHTML=rowsHTML();document.querySelectorAll("#fl button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.f===S.filter)));}}break;
+    case "demo":S.demo=true;S.answers=SAMPLE_ANSWERS.slice();S.claude="";S.mode="local";S.status="";S.sig="";S.filter="all";S.res=analyze(S.answers);S.screen="results";S.tab="rank";S.confirmReset=false;render();toTop();break;
+    case "exitdemo":S.demo=false;S.answers=Array(N).fill(null);S.q=0;S.res=null;S.claude="";S.mode="local";S.status="";S.sig="";load();S.screen="intro";render();toTop();break;
+    case "ask":askClaude();break;
+    case "stop":if(S.ctl)S.ctl.abort();break;
+    case "toggle":S.mode=S.mode==="claude"?"local":"claude";paintAnalysis();break;
+  }
+}
+app.addEventListener("click",e=>{const el=e.target.closest("[data-act]");if(el&&!el.disabled)go(el.dataset.act,el);});
+app.addEventListener("input",e=>{if(e.target.id==="ctx")S.ctx=e.target.value;});
+document.addEventListener("keydown",e=>{
+  if(S.screen!=="test"||e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA/.test(e.target.tagName))return;
+  if(/^[1-5]$/.test(e.key))go("pick",{dataset:{v:e.key}});
+  else if(e.key==="ArrowLeft")go("back");
+  else if(e.key==="ArrowRight")go("next");
+});
+load();render();
+(async()=>{
+  try{if(window.claude&&window.claude.use)S.sample=await window.claude.use("sample");}catch(e){S.sample=null;}
+  S.sampleReady=true;
+  if(S.screen==="results"&&S.tab==="analysis"&&!S.busy)rResults();
+})();
+</script>
+
+</body></html>
