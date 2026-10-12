@@ -4,6 +4,8 @@ Una versione fatta da me di un test sui punti di forza, ispirato a CliftonStreng
 
 > **Questo test non ha validità scientifica.** È uno spunto di riflessione, non una misura psicologica e non sostituisce il test ufficiale di Gallup né una valutazione professionale.
 
+**[Prova la dashboard online](https://brune1.github.io/mappa-dei-talenti/)**
+
 ## Perché l'ho creato
 
 I test originali sui punti di forza sono a pagamento. Prima di spendere, volevo un'idea generale di come funzionano: come si passa da una serie di scelte a una classifica di talenti e che tipo di analisi se ne può ricavare. Ho preferito costruirne una versione mia, accettando in partenza che non abbia la stessa validità dell'originale.
@@ -31,7 +33,7 @@ Claude ha scritto le affermazioni del test e costruito la dashboard. Anche la pu
 
 ## Come usarlo
 
-1. Apri `index.html` con un doppio clic: si apre nel browser, senza installare nulla.
+1. Apri la [dashboard online](https://brune1.github.io/mappa-dei-talenti/). In alternativa scarica il progetto e apri `index.html` con un doppio clic: si apre nel browser, senza installare nulla.
 2. Scegli **"Vedi i risultati dell'esempio"** per un esempio già compilato, oppure **"Inizia il test"** per rispondere tu.
 3. Le tue risposte restano salvate solo nel tuo browser e puoi interrompere e riprendere quando vuoi.
 
